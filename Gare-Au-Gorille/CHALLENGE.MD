@@ -26,11 +26,16 @@
  Ce CTF etait plutot interessant et introduisait une faille que j'avait assez peu experimente auparavant
 
 **Recon**
+![home](![image](https://user-images.githubusercontent.com/64932654/167711362-83b80e2f-f083-4199-ac3a-598aba2f2f82.png))
+- Lors de l'arrivee sur le site on remarque:
+    - **un field pour chercher des memes**
+    - **Un boutton "Meme Gollection" qui ramene vers la homepage**
+    - **Un boutton "Ajouter un Meme" qui ramene vers le flag**
+    - **Un boutton pour report les memes aux admin.**
+    - **Un token nous est attribue**
 
-- Lors de l'arrivee sur le site on remarque un field pour chercher des memes
-
-
-
+Je commence tout d'abord par cliquer sur "Ajouter Un Meme" mais evidemment il m'est impossible d'y acceder a moins d'etre admin.
+Je passe donc au field et je remarque que quand je donne l'entree ` <script>alert('XSS')</script> ` le script en javascript est execute
 ### :arrows_counterclockwise: Reversing the program
 
 We can starts analyzing the binary with some utilities:
